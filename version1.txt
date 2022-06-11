@@ -1,0 +1,19 @@
+   void pwd_command(){
+	char cwd[100];
+	//current working
+	getcwd(cwd, sizeof(cwd));
+	printf("\nCurrent Directory: %s", cwd);
+	printf("\n");
+}
+int main(){
+printf("Enter the command\n");
+while(1){
+char osama[100];
+gets(osama);
+char * oss=strtok(osama," ");
+if(strcmp(osama,"pwd")==0){
+pwd_command();
+}
+}
+return 0;
+}
