@@ -1,0 +1,95 @@
+#include <dirent.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <string.h>
+#include <time.h>
+#include <sys/stat.h>
+#include<stdbool.h>
+//===================pwd==================//
+void pwd_command(){
+char cwd[100];
+//current working
+getcwd(cwd, sizeof(cwd));
+printf("\nCurrent Directory: %s", cwd);
+printf("\n");
+}
+//========================cd=======================//
+// this method do the same working for pwd it just to uptade directory
+void MakeDir(){
+char cwd[100];
+getcwd(cwd, sizeof(cwd));
+printf("\nNew Directory: %s", cwd);
+printf("\n");
+}
+   void cd(char *(osama)){
+  if (osama == NULL){
+// change the current working directory(print current directory)
+chdir("/Users");
+// compeare between vaule of pointer osama and ".." 
+  }else if(strcmp(osama,"..")==0){
+  // its a method use for change the directory
+   chdir("..");
+   MakeDir();
+   // compeare between vaule of pointer osama and "../" 
+    }else if(strcmp(osama,"../")==0){
+     chdir("../");
+      MakeDir();
+      // if no vaule equal ".." or "../" 
+       }else{
+       chdir(osama);
+       MakeDir();
+;
+}
+}
+//==========================Kill============================//
+void kill_Command(char*(osama)) {
+//define the variable pid and sig
+    pid_t pid;
+    int sig;
+//compare the value of pointer osama if NULL of not
+  if (osama == NULL){
+printf("\nNo Parameter Provided Executed\n");
+return;
+    }
+//convert the string osama to integer(convert from string to integer)
+        pid = atoi(osama);
+//use the SIGTERM its depened for value of pid
+        sig = SIGTERM;
+//define the variable i and the its implement kill method its take the pid and sig
+  	int i = kill(pid, sig);
+//if the return value from kill method equal 0 its kill else is not found
+   if(i == 0)
+   	printf("killed\n");
+   else
+   	perror("not found!\n");
+    }
+//=============================Main=======================//
+int main(){
+printf("Enter The Command\n");
+while(1){
+    char osama [100];
+    //take input from user
+     gets(osama);
+     // use for split the input
+   char * oss=strtok(osama," ");
+   //compare between the first value of poiter and the string cd
+ if(strcmp(osama,"cd")==0){
+ // its use for change the value of pointer
+ oss=strtok(NULL," ");
+cd(oss);
+//compare between the first value of poiter and the string pwd
+}else if(strcmp(osama,"pwd")==0){
+pwd_command();
+//compare between the first value of poiter and the string kill
+}else if(strcmp(oss,"kill")==0){
+ // its use for change the value of pointer
+ oss=strtok(NULL," ");
+ kill_Command(oss);
+ }
+    return 0;
+}
