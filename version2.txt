@@ -17,6 +17,7 @@ getcwd(cwd, sizeof(cwd));
 printf("\nCurrent Directory: %s", cwd);
 printf("\n");
 }
+// this method do the same working for pwd it just to uptade directory
 void MakeDir(){
 char cwd[100];
 getcwd(cwd, sizeof(cwd));
@@ -25,14 +26,18 @@ printf("\n");
 }
    void cd(char *(osama)){
   if (osama == NULL){
-// change the current working directory
+// change the current working directory(print current directory)
 chdir("/Users");
+// compeare between vaule of pointer osama and ".." 
   }else if(strcmp(osama,"..")==0){
+  // its a method use for change the directory
    chdir("..");
    MakeDir();
+   // compeare between vaule of pointer osama and "../" 
     }else if(strcmp(osama,"../")==0){
      chdir("../");
       MakeDir();
+      // if no vaule equal ".." or "../" 
        }else{
        chdir(osama);
        MakeDir();
@@ -44,11 +49,16 @@ int main(){
 printf("Enter The Command\n");
 while(1){
     char osama [100];
+    //take input from user
      gets(osama);
+     // use for split the input
    char * oss=strtok(osama," ");
+   //compare between the first value of poiter and the string cd
  if(strcmp(osama,"cd")==0){
+ // its use for change the value of pointer
  oss=strtok(NULL," ");
 cd(oss);
+//compare between the first value of poiter and the string pwd
 }else if(strcmp(osama,"pwd")==0){
 pwd_command();
 }
