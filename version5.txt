@@ -1,0 +1,272 @@
+#include <dirent.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <string.h>
+#include <time.h>
+#include <sys/stat.h>
+#include<stdbool.h>
+//===================pwd==================//
+void pwd_command(){
+char cwd[100];
+//current working
+getcwd(cwd, sizeof(cwd));
+printf("\nCurrent Directory: %s", cwd);
+printf("\n");
+}
+//========================cd=======================//
+// this method do the same working for pwd it just to uptade directory
+void MakeDir(){
+char cwd[100];
+getcwd(cwd, sizeof(cwd));
+printf("\nNew Directory: %s", cwd);
+printf("\n");
+}
+   void cd(char *(osama)){
+  if (osama == NULL){
+// change the current working directory(print current directory)
+chdir("/Users");
+// compeare between vaule of pointer osama and ".." 
+  }else if(strcmp(osama,"..")==0){
+  // its a method use for change the directory
+   chdir("..");
+   MakeDir();
+   // compeare between vaule of pointer osama and "../" 
+    }else if(strcmp(osama,"../")==0){
+     chdir("../");
+      MakeDir();
+      // if no vaule equal ".." or "../" 
+       }else{
+       chdir(osama);
+       MakeDir();
+;
+}
+}
+//==========================Kill============================//
+void kill_Command(char*(osama)) {
+//define the variable pid and sig
+    pid_t pid;
+    int sig;
+//compare the value of pointer osama if NULL of not
+  if (osama == NULL){
+printf("\nNo Parameter Provided Executed\n");
+return;
+    }
+//convert the string osama to integer(convert from string to integer)
+        pid = atoi(osama);
+//use the SIGTERM its depened for value of pid
+        sig = SIGTERM;
+//define the variable i and the its implement kill method its take the pid and sig
+  	int i = kill(pid, sig);
+//if the return value from kill method equal 0 its kill else is not found
+   if(i == 0)
+   	printf("killed\n");
+   else
+   	perror("not found!\n");
+    }
+//=====================ps-A========================//
+void pswithA(){
+    printf("PID    TTY     TIME     CMD\n");
+//define the variable from type directory
+    DIR *fil;
+//dir its a class have processes
+    struct dirent *dir;
+//open dir proc its have a infrmation about process
+    fil = opendir("/proc");
+
+    if (fil)
+
+    {
+//it use for continue read from fil we stop read if the value of fil=NULL
+        while ((dir = readdir(fil)) != NULL)
+
+        {
+//define a variable char
+   char ma[500];
+//it use for read the name of process from proc and dir(stat)
+   snprintf(ma,500, "/proc/%s/stat", dir->d_name);
+//these case use for read a process have pid value
+      if (dir->d_name[0]<48 || dir->d_name[0]>57 )
+
+               continue;
+//if we can kill the process these mean the process is run so we take him
+               int kil = atoi(dir->d_name);
+
+               if (kill(kil, 0) != 0)
+
+                continue;
+//define variable i =pid for process
+  int i;
+//name of process
+  char name[30];
+  char stat;
+  int utime,stime;
+//we use for open file and read from ma
+   FILE *fa = fopen(ma, "r");
+//file scan to the name of process
+   fscanf(fa,"%d %s", &i,name);
+            char gf[30];
+            int j = 1;
+//it use for find the value of stime and utime 
+//note: any process have the same stime and utime and the value its same (15,14)
+//we scan of fa if compare the value of stime and utime
+  while (fscanf(fa, "%s", gf) == 1)
+
+            {
+                if (j == 14)
+//convert from string to integer
+                    utime = atoi(gf);
+                if (j == 15)
+//convert from string to integer
+                    stime = atoi(gf);
+                j++;
+
+            }
+
+ 
+//we do these step to can clculate the value of real time (sec)  from time of computer
+  int time = stime+utime;
+ int t = time/sysconf(_SC_CLK_TCK);
+//fd/0 these allow to read the information of process
+  char a[40];
+  snprintf(a, 40, "/proc/%s/fd/0", dir->d_name);
+ //open the variable a and just read from him        
+ int fx;
+ fx = open(a, O_RDONLY);
+//pointer ttyp
+  char *ttyP;
+//we pass the value of fx to method ttyname to check if the tty file has these process
+  ttyP = ttyname(fx);
+//if we find the value of ttyp (print him)
+ if (ttyP) {
+             printf("%d %5s\t%2d %7s\n", i, ttyP + 5, t, name);
+ }else{
+             printf("%d\t?\t%2d %7s\n", i, t, name);
+
+ }
+
+  }
+
+}
+
+}
+//=====================ps========================//
+void ps(){
+    printf("PID    TTY     TIME     CMD\n");
+//define the variable from type directory
+    DIR *fil;
+//dir its a class have processes
+    struct dirent *dir;
+//open dir proc its have a infrmation about process
+    fil = opendir("/proc");
+
+    if (fil)
+
+    {
+//it use for continue read from fil we stop read if the value of fil=NULL
+        while ((dir = readdir(fil)) != NULL)
+
+        {
+//define a variable char
+   char ma[500];
+//it use for read the name of process from proc and dir(stat)
+   snprintf(ma,500, "/proc/%s/stat", dir->d_name);
+//these case use for read a process have pid value
+      if (dir->d_name[0]<48 || dir->d_name[0]>57 )
+
+               continue;
+//define variable i =pid for process
+  int i;
+//name of process
+  char name[30];
+  char stat;
+  int utime,stime;
+//we use for open file and read from ma
+   FILE *fa = fopen(ma, "r");
+//file scan to the name of process
+   fscanf(fa,"%d %s", &i,name);
+            char gf[30];
+            int j = 1;
+//it use for find the value of stime and utime 
+//note: any process have the same stime and utime and the value its same (15,14)
+//we scan of fa if compare the value of stime and utime
+  while (fscanf(fa, "%s", gf) == 1)
+
+            {
+                if (j == 14)
+//convert from string to integer
+                    utime = atoi(gf);
+                if (j == 15)
+//convert from string to integer
+                    stime = atoi(gf);
+                j++;
+
+            }
+
+ 
+//we do these step to can clculate the value of real time (sec)  from time of computer
+  int time = stime+utime;
+ int t = time/sysconf(_SC_CLK_TCK);
+//fd/0 these allow to read the information of process
+  char a[40];
+  snprintf(a, 40, "/proc/%s/fd/0", dir->d_name);
+ //open the variable a and just read from him        
+ int fx;
+ fx = open(a, O_RDONLY);
+//pointer ttyp
+  char *ttyP;
+//we pass the value of fx to method ttyname to check if the tty file has these process
+  ttyP = ttyname(fx);
+//if we find the value of ttyp (print him)
+ if (ttyP) {
+             printf("%d %5s\t%2d %7s\n", i, ttyP + 5, t, name);
+ }else{
+             printf("%d\t?\t%2d %7s\n", i, t, name);
+
+ }
+
+  }
+
+}
+
+}
+
+//=============================Main=======================//
+int main(){
+printf("Enter The Command\n");
+while(1){
+    char osama [100];
+    //take input from user
+     gets(osama);
+     // use for split the input
+   char * oss=strtok(osama," ");
+   //compare between the first value of poiter and the string cd
+ if(strcmp(osama,"cd")==0){
+ // its use for change the value of pointer
+ oss=strtok(NULL," ");
+cd(oss);
+//compare between the first value of poiter and the string pwd
+}else if(strcmp(osama,"pwd")==0){
+pwd_command();
+//compare between the first value of poiter and the string kill
+}else if(strcmp(oss,"kill")==0){
+ // its use for change the value of pointer
+ oss=strtok(NULL," ");
+ kill_Command(oss);
+//compare between the first value of poiter and the string ps-A
+ }else if(strcmp(oss,"ps-A")==0){
+ pswithA();
+//compare between the first value of poiter and the string ps
+}else if(strcmp(oss,"ps")==0){
+ ps();
+//compare between the first value of poiter and the string help
+}else{
+ printf("Error\n");
+ }
+}
+    return 0;
+}
