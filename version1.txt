@@ -9,9 +9,12 @@ int main(){
 printf("Enter the command\n");
 while(1){
 char osama[100];
+//take input from user
 gets(osama);
+// use for split the input
 char * oss=strtok(osama," ");
-if(strcmp(osama,"pwd")==0){
+//compare between the first value of poiter and the string pwd
+if(strcmp(oss,"pwd")==0){
 pwd_command();
 }
 }
